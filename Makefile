@@ -1,30 +1,26 @@
 SHELL := /bin/bash
 PROJECT = github.com/luxas/sample-config
-APIS_DIR = ${APIS_DIR}
+APIS_DIR = ${PROJECT}/pkg/apis
 
-shell:
-	docker run -it \
-		-v $(shell pwd):/go/src/github.com/luxas/sample-config \
-		-w /go/src/github.com/luxas/sample-config \
-		-e GO111MODULE=on \
-		golang:1.11
+all: build
 
 build: 
+	$(MAKE) shell COMMAND="make binary"
+
+shell:
+	mkdir -p /tmp/go-cache bin/cache
 	docker run -it \
 		-v $(shell pwd):/go/src/github.com/luxas/sample-config \
+		-v $(shell pwd)/bin/cache:/go/bin \
+		-v /tmp/go-cache:/.cache/go-build \
 		-w /go/src/github.com/luxas/sample-config \
+		-u $(shell id -u):$(shell id -g) \
 		-e GO111MODULE=on \
 		golang:1.11 \
-		make binary
+		$(COMMAND)
 
-binary: autogen vendor
+binary: autogen
 	go build -o bin/sample-config github.com/luxas/sample-config/cmd/sample-config
-
-vendor: binary
-	if [[ ! -f go.mod ]]; then go mod init; fi
-	go mod tidy
-	go mod vendor
-	go mod verify
 
 autogen: /go/bin/deepcopy-gen /go/bin/defaulter-gen /go/bin/conversion-gen
 	# Let the boilerplate be empty
@@ -36,7 +32,7 @@ autogen: /go/bin/deepcopy-gen /go/bin/defaulter-gen /go/bin/conversion-gen
 		-h /tmp/boilerplate
 
 	/go/bin/defaulter-gen \
-		--input-dirs ${APIS_DIR}/pkg/apis/config/v1,${APIS_DIR}/config/v1beta1 \
+		--input-dirs ${APIS_DIR}/config/v1,${APIS_DIR}/config/v1beta1 \
 		-O zz_generated.defaults \
 		-h /tmp/boilerplate
 
@@ -45,9 +41,15 @@ autogen: /go/bin/deepcopy-gen /go/bin/defaulter-gen /go/bin/conversion-gen
 		-O zz_generated.conversion \
 		-h /tmp/boilerplate
 
-/go/bin/%:
-	go install /go/src/github.com/luxas/sample-config/vendor/k8s.io/code-generator/cmd/$*
+/go/bin/%: vendor
+	go install k8s.io/code-generator/cmd/$*
+
+vendor:
+	if [[ ! -f go.mod ]]; then go mod init; fi
+	go mod tidy
+	go mod vendor
+	go mod verify
 
 clean:
-	rm -r bin vendor
+	rm -rf bin vendor go.sum go.mod
 	find . -type f | grep zz_generated | grep -v vendor | xargs -r rm
