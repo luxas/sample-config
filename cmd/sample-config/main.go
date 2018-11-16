@@ -5,6 +5,7 @@ import (
 	"os"
 	"fmt"
 
+	"github.com/spf13/pflag"
 	"github.com/luxas/sample-config/pkg/apis/config/scheme"
 	"github.com/luxas/sample-config/pkg/apis/config"
 	"github.com/luxas/sample-config/pkg/apis/config/v1"
@@ -14,7 +15,21 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/serializer/json"
 )
 
+var (
+	bindPort = pflag.Uint32("bind-port", v1.DefaultPort, "The port to bind to")
+	bindAddress = pflag.String("bind-address", v1.DefaultAddress, "The address to bind to")
+	configFile = pflag.String("config", "", "The config file to read this component's configuration")
+)
+
 func main() {
+	pflag.CommandLine.MarkHidden("alsologtostderr")
+	pflag.CommandLine.MarkHidden("log_backtrace_at")
+	pflag.CommandLine.MarkHidden("log_dir")
+	pflag.CommandLine.MarkHidden("logtostderr")
+	pflag.CommandLine.MarkHidden("stderrthreshold")
+	pflag.CommandLine.MarkHidden("v")
+	pflag.CommandLine.MarkHidden("vmodule")
+	pflag.Parse()
 	if err := readConfigOrWriteDefault(); err != nil {
 		fmt.Printf("error: %v\n", err)
 		os.Exit(1)
@@ -26,8 +41,8 @@ func readConfigOrWriteDefault() error {
 	cfg := &config.MyAppConfiguration{}
 	// If an argument was specified, try to deserialize the file
 	var err error
-	if len(os.Args) > 1 && len(os.Args[1]) != 0 {
-		err = decodeFileInto(os.Args[1], cfg)
+	if len(*configFile) > 0 {
+		err = decodeFileInto(*configFile, cfg)
 	} else {
 		err = populateV1Defaults(cfg)
 	}
@@ -58,7 +73,12 @@ func decodeFileInto(filePath string, obj runtime.Object) error {
 func populateV1Defaults(cfg *config.MyAppConfiguration) error {
 	// Create a new config of some external version,
 	// default it, convert it into the internal version
-	v1cfg := &v1.MyAppConfiguration{}
+	v1cfg := &v1.MyAppConfiguration{
+		Server: v1.ServerConfiguration{
+			Address: *bindAddress,
+			Port: uint32(*bindPort),
+		},
+	}
 	scheme.Scheme.Default(v1cfg)
 	return scheme.Scheme.Convert(v1cfg, cfg, nil)
 }
