@@ -1,6 +1,7 @@
 SHELL := /bin/bash
 PROJECT = github.com/luxas/sample-config
 APIS_DIR = ${PROJECT}/pkg/apis
+CACHE_DIR = /tmp/go-cache
 
 all: build
 
@@ -8,19 +9,20 @@ build:
 	$(MAKE) shell COMMAND="make binary"
 
 shell:
-	mkdir -p /tmp/go-cache bin/cache
+	mkdir -p $(CACHE_DIR)/bin $(CACHE_DIR)/src $(CACHE_DIR)/cache bin/cache
 	docker run -it \
 		-v $(shell pwd):/go/src/github.com/luxas/sample-config \
-		-v $(shell pwd)/bin/cache:/go/bin \
-		-v /tmp/go-cache:/.cache/go-build \
+		-v $(CACHE_DIR)/bin:/go/bin \
+		-v $(CACHE_DIR)/src:/go/src \
+		-v $(CACHE_DIR)/cache:/.cache/go-build \
 		-w /go/src/github.com/luxas/sample-config \
 		-u $(shell id -u):$(shell id -g) \
 		-e GO111MODULE=on \
 		golang:1.11 \
 		$(COMMAND)
 
-binary: autogen
-	go build -o bin/sample-config github.com/luxas/sample-config/cmd/sample-config
+binary: autogen vendor
+	go build -mod=vendor -o bin/sample-config github.com/luxas/sample-config/cmd/sample-config
 
 autogen: /go/bin/deepcopy-gen /go/bin/defaulter-gen /go/bin/conversion-gen
 	# Let the boilerplate be empty
@@ -49,6 +51,9 @@ vendor:
 	go mod tidy
 	go mod vendor
 	go mod verify
+
+only-build:
+	$(MAKE) shell COMMAND="go build -mod=vendor -o bin/sample-config github.com/luxas/sample-config/cmd/sample-config"
 
 clean:
 	rm -rf bin vendor go.sum go.mod
