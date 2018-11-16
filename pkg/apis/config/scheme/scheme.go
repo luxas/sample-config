@@ -3,11 +3,11 @@ package scheme
 import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
-	utilruntime "k8s.io/apimachinery/pkg/util/runtime"	
+	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 
+	"github.com/luxas/sample-config/pkg/apis/config"
 	"github.com/luxas/sample-config/pkg/apis/config/v1"
 	"github.com/luxas/sample-config/pkg/apis/config/v1beta1"
-	"github.com/luxas/sample-config/pkg/apis/config"
 )
 
 var (

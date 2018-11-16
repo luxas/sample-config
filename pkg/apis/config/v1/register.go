@@ -12,7 +12,7 @@ var (
 		addDefaultingFuncs,
 	)
 	localSchemeBuilder = &SchemeBuilder
-	AddToScheme = localSchemeBuilder.AddToScheme
+	AddToScheme        = localSchemeBuilder.AddToScheme
 )
 
 // GroupName is the group name use in this package
@@ -20,7 +20,7 @@ const GroupName = "config.luxaslabs.com"
 
 // SchemeGroupVersion is group version used to register these objects
 var SchemeGroupVersion = schema.GroupVersion{
-	Group: GroupName,
+	Group:   GroupName,
 	Version: "v1",
 }
 

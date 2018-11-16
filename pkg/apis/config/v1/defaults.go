@@ -1,14 +1,14 @@
 package v1
 
 import (
-	"k8s.io/apimachinery/pkg/runtime"
 	apimachineryconfigv1 "k8s.io/apimachinery/pkg/apis/config/v1alpha1"
+	"k8s.io/apimachinery/pkg/runtime"
 	apiserverconfigv1 "k8s.io/apiserver/pkg/apis/config/v1alpha1"
 )
 
 const (
 	DefaultAddress = "0.0.0.0"
-	DefaultPort = 9090
+	DefaultPort    = 9090
 )
 
 func addDefaultingFuncs(scheme *runtime.Scheme) error {

@@ -13,10 +13,10 @@ var (
 		addDefaultingFuncs,
 	)
 	localSchemeBuilder = &SchemeBuilder
-	AddToScheme = localSchemeBuilder.AddToScheme
+	AddToScheme        = localSchemeBuilder.AddToScheme
 	// SchemeGroupVersion is'the group & version for this scheme
 	SchemeGroupVersion = schema.GroupVersion{
-		Group: GroupName,
+		Group:   GroupName,
 		Version: "v1beta1",
 	}
 )

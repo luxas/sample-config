@@ -1,14 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
-	"fmt"
 
-	"github.com/spf13/pflag"
-	"github.com/luxas/sample-config/pkg/apis/config/scheme"
 	"github.com/luxas/sample-config/pkg/apis/config"
+	"github.com/luxas/sample-config/pkg/apis/config/scheme"
 	"github.com/luxas/sample-config/pkg/apis/config/v1"
+	"github.com/spf13/pflag"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -16,9 +16,9 @@ import (
 )
 
 var (
-	bindPort = pflag.Uint32("bind-port", v1.DefaultPort, "The port to bind to")
+	bindPort    = pflag.Uint32("bind-port", v1.DefaultPort, "The port to bind to")
 	bindAddress = pflag.String("bind-address", v1.DefaultAddress, "The address to bind to")
-	configFile = pflag.String("config", "", "The config file to read this component's configuration")
+	configFile  = pflag.String("config", "", "The config file to read this component's configuration")
 )
 
 func main() {
@@ -69,6 +69,7 @@ func decodeFileInto(filePath string, obj runtime.Object) error {
 	// it will be read successfully and converted into the internal version
 	return runtime.DecodeInto(scheme.Codecs.UniversalDecoder(), content, obj)
 }
+
 // populateV1Defaults populates cfg based on v1 defaults
 func populateV1Defaults(cfg *config.MyAppConfiguration) error {
 	// Create a new config of some external version,
@@ -76,12 +77,13 @@ func populateV1Defaults(cfg *config.MyAppConfiguration) error {
 	v1cfg := &v1.MyAppConfiguration{
 		Server: v1.ServerConfiguration{
 			Address: *bindAddress,
-			Port: uint32(*bindPort),
+			Port:    uint32(*bindPort),
 		},
 	}
 	scheme.Scheme.Default(v1cfg)
 	return scheme.Scheme.Convert(v1cfg, cfg, nil)
 }
+
 // marshalYAML marshals any ComponentConfig object registered in the scheme for the specific version
 func marshalYAML(obj runtime.Object, groupVersion schema.GroupVersion) ([]byte, error) {
 	// yamlEncoder is a generic-purpose encoder to YAML for this scheme
