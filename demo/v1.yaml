@@ -1,0 +1,11 @@
+apiVersion: config.luxaslabs.com/v1
+kind: MyAppConfiguration
+clientConnection:
+  burst: 200
+  kubeconfig: /var/my-app/kubeconfig.yaml
+  qps: 100
+server:
+  address: 1.2.3.4
+  port: 8080
+  tlsCertFile: /var/my-app/cert.crt
+  tlsPrivateKeyFile: /var/my-app/cert.key
