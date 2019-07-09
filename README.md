@@ -13,4 +13,4 @@ The recording of the talk can be found [here](https://youtu.be/klHBzISZkCw).
 [MIT](LICENSE)
 
 
-[KEP]: https://github.com/kubernetes/community/blob/master/keps/sig-cluster-lifecycle/0014-20180707-componentconfig-api-types-to-staging.md
+[KEP]: https://github.com/kubernetes/enhancements/blob/master/keps/sig-cluster-lifecycle/wgs/0014-20180707-componentconfig-api-types-to-staging.md
