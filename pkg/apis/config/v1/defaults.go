@@ -1,9 +1,8 @@
 package v1
 
 import (
-	apimachineryconfigv1 "k8s.io/apimachinery/pkg/apis/config/v1alpha1"
 	"k8s.io/apimachinery/pkg/runtime"
-	apiserverconfigv1 "k8s.io/apiserver/pkg/apis/config/v1alpha1"
+	componentbaseconfigext "k8s.io/component-base/config/v1alpha1"
 )
 
 const (
@@ -24,6 +23,6 @@ func SetDefaults_MyAppConfiguration(obj *MyAppConfiguration) {
 		obj.Server.Port = DefaultPort
 	}
 
-	apimachineryconfigv1.RecommendedDefaultClientConnectionConfiguration(&obj.ClientConnection)
-	apiserverconfigv1.RecommendedDefaultLeaderElectionConfiguration(&obj.LeaderElection)
+	componentbaseconfigext.RecommendedDefaultClientConnectionConfiguration(&obj.ClientConnection)
+	componentbaseconfigext.RecommendedDefaultLeaderElectionConfiguration(&obj.LeaderElection)
 }
