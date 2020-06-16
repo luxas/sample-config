@@ -1,9 +1,8 @@
 package v1beta1
 
 import (
-	apimachineryconfigv1 "k8s.io/apimachinery/pkg/apis/config/v1alpha1"
 	"k8s.io/apimachinery/pkg/runtime"
-	apiserverconfigv1 "k8s.io/apiserver/pkg/apis/config/v1alpha1"
+	componentbaseconfigext "k8s.io/component-base/config/v1alpha1"
 )
 
 func addDefaultingFuncs(scheme *runtime.Scheme) error {
@@ -19,6 +18,6 @@ func SetDefaults_MyAppConfiguration(obj *MyAppConfiguration) {
 		obj.HTTPSPort = 9090
 	}
 
-	apimachineryconfigv1.RecommendedDefaultClientConnectionConfiguration(&obj.ClientConnection)
-	apiserverconfigv1.RecommendedDefaultLeaderElectionConfiguration(&obj.LeaderElection)
+	componentbaseconfigext.RecommendedDefaultClientConnectionConfiguration(&obj.ClientConnection)
+	componentbaseconfigext.RecommendedDefaultLeaderElectionConfiguration(&obj.LeaderElection)
 }

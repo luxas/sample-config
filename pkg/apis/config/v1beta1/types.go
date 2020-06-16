@@ -1,9 +1,8 @@
 package v1beta1
 
 import (
-	apimachineryconfigv1 "k8s.io/apimachinery/pkg/apis/config/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	apiserverconfigv1 "k8s.io/apiserver/pkg/apis/config/v1alpha1"
+	componentbaseconfigext "k8s.io/component-base/config/v1alpha1"
 )
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -11,9 +10,9 @@ type MyAppConfiguration struct {
 	metav1.TypeMeta `json:",inline"`
 
 	// ClientConnection configures the connection to Kubernetes
-	ClientConnection apimachineryconfigv1.ClientConnectionConfiguration `json:"clientConnection"`
+	ClientConnection componentbaseconfigext.ClientConnectionConfiguration `json:"clientConnection"`
 	// LeaderElection configures so the component can be deployed in HA mode on k8s
-	LeaderElection apiserverconfigv1.LeaderElectionConfiguration `json:"leaderElection"`
+	LeaderElection componentbaseconfigext.LeaderElectionConfiguration `json:"leaderElection"`
 	// Default: "0.0.0.0"
 	ServerAddress string `json:"serverAddress"`
 	// Default: 9090
